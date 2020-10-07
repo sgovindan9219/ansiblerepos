@@ -1,0 +1,47 @@
+---
+- hosts: all
+  vars:
+    filename: "{{ filename }}"
+	filesystem: "{{filesystem}}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+	ftpserverip:"{{ftpserverip}}"
+	checksum:"{{checksum}}"
+	value:"{{value}}"
+	curfile:"{{curfile}}"
+	version:"{{version}}"
+    
+  tasks:
+  - name: Copy a file from FTP to the router flash, prompt for all credentials
+    ios_command:
+      commands:
+        - command: 'copy ftp://{{ username }}:{{ password }}@{{ftpserverip}}/tftp/{{ filename }} {{filesystem}}:{{ filename }}'
+          prompt: 'Destination filename \[{{ filename }}\]?'
+          answer: '{{ filename }}'
+  - name : Verify md5 checksum
+    ios_command:
+	  commands:
+	  - command: {{value}} = 'verify /md5 {{filesystem}}:{{filename}}'
+	              when: {{value}} == {{checksum}}
+				  msg: "checksum macthes"
+   -name : set boot marker
+        ios_command:
+		    commands:
+            -command: {{version}} = sh ver
+			 {{curfile}} = regexp: '^bootflash:isr4300-universalk9.03.16.04b.S.155-3.S4b-ext.SPA.bin$'
+			 -command:'conf t
+			           bootsystem {{filesystem}}:{{filename}}
+					   bootsystem {{filesystem}}:{{curfile}}'
+					   
+					   
+   -name  : reload 
+        ios_command:
+		  commands:
+		  -command: 'reload'
+		   prompt:'reload confirm'
+		   answer: 'y'
+		   
+		  
+					 
+				 
+	  
