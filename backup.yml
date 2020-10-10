@@ -1,0 +1,13 @@
+--
+- hosts:all
+    vars:
+    start:{{start}}
+    run:{{run}}
+  tasks:
+  -name:pulling backups
+   -ios_commands:
+   {{start}} == show start
+   ((run}} == show run
+   when: {{start}} != {{run}}
+   ios_config:
+   backup:yes
