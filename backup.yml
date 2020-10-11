@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+  -name: pulling backups
+   ios_config:
+     backup:yes
+     backup_option:
+     filename:backup.cfg
+     dir_path:Documents
+   
