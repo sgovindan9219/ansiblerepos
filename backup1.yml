@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - name: pulling backups
+    ios_config:
+      backup: yes
+      
